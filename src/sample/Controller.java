@@ -15,6 +15,7 @@ import javafx.util.Callback;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,18 +29,6 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-        List<String> lista = new ArrayList<>();
-
-        lista.add("hola");
-        lista.add("hola2");
-        lista.add("saludos");
-
-        createColumns(lista);
-
-        tableView.getItems().add(lista);
-        tableView.getItems().add(Arrays.asList("A1","A2","A3"));
-
     }
 
     public void createColumns(List<String> lista){
@@ -81,8 +70,8 @@ public class Controller implements Initializable {
                 line = br.readLine();
             }
 
-        } catch (Exception e) {
-            System.out.println("Lo sentimos");
+        } catch (Exception ex) {
+            System.out.println("Ha ocurrido un error fatal");
         }
     }
 }
