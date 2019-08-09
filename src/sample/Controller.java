@@ -59,28 +59,40 @@ public class Controller implements Initializable {
                 String line = br.readLine();
                 boolean first = true;
                 while (null!=line) {
+                    if (line.contains(";")) {
+                        try{
+                            throw new FileisnotCSV("El archivo no esta separado por comas");
+                        }catch(FileisnotCSV ex){
+                            System.out.println(ex.getMessage());
+                            JOptionPane.showMessageDialog(null,ex.getMessage());
+                            clearTable();
+                            break;
+                        }
+
+                    } else {
                     List<String> fields = Arrays.asList(line.split(","));
-                    if (first){
+                    if (first) {
                         ColumnSize = fields.size();
 
                         createColumns(fields);
                         first = false;
                     } else {
-                        try{
-                            if (ColumnSize == fields.size()){
+                        try {
+                            if (ColumnSize == fields.size()) {
                                 tableView.getItems().add(fields);
-                            }else{
+                            } else {
                                 throw new MismatchException("Las columnas no son todas iguales");
                             }
-                        }catch (MismatchException ex) {
+                        } catch (MismatchException ex) {
                             System.out.println(ex.getMessage());
-                            JOptionPane.showMessageDialog(null,ex.getMessage());
+                            JOptionPane.showMessageDialog(null, ex.getMessage());
                             clearTable();
                             break;
                         }
                     }
 
                     line = br.readLine();
+                }
                 }
             }else {
                 throw new emptyException("El archivo se encuenta vacio, intente con otro");
