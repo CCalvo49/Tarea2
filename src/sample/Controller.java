@@ -23,6 +23,7 @@ public class Controller implements Initializable {
     @FXML private Button btn1;
     @FXML public TableView<List<String>> tableView;
     BufferedReader br = null;
+    Integer ColumnSize = 0;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -60,10 +61,23 @@ public class Controller implements Initializable {
                 while (null!=line) {
                     List<String> fields = Arrays.asList(line.split(","));
                     if (first){
+                        ColumnSize = fields.size();
+
                         createColumns(fields);
                         first = false;
                     } else {
-                        tableView.getItems().add(fields);
+                        try{
+                            if (ColumnSize == fields.size()){
+                                tableView.getItems().add(fields);
+                            }else{
+                                throw new MismatchException("Las columnas no son todas iguales");
+                            }
+                        }catch (MismatchException ex) {
+                            System.out.println(ex.getMessage());
+                            JOptionPane.showMessageDialog(null,ex.getMessage());
+                            clearTable();
+                            break;
+                        }
                     }
 
                     line = br.readLine();
@@ -73,7 +87,7 @@ public class Controller implements Initializable {
             }
 
 
-        } catch (NullPointerException | IOException ex) {
+        } catch (emptyException | IOException ex) {
             System.out.println(ex.getMessage());
             JOptionPane.showMessageDialog(null,ex.getMessage());
         }
