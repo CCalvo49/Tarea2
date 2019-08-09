@@ -1,23 +1,20 @@
 package sample;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
-import javafx.util.Callback;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.UncheckedIOException;
+import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -53,25 +50,32 @@ public class Controller implements Initializable {
         fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("CSV Files","*.csv"));
         File seletedFile = fc.showOpenDialog(null);
         try {
-            String rute = seletedFile.getAbsolutePath();
-            System.out.println(rute);
-            br =new BufferedReader(new FileReader(rute));
-            String line = br.readLine();
-            boolean first = true;
-            while (null!=line) {
-                List<String> fields = Arrays.asList(line.split(","));
-                if (first){
-                    createColumns(fields);
-                    first = false;
-                } else {
-                    tableView.getItems().add(fields);
-                }
+            if (seletedFile.length() != 0){
+                String rute = seletedFile.getAbsolutePath();
+                System.out.println(rute);
+                System.out.println(seletedFile.length());
+                br =new BufferedReader(new FileReader(rute));
+                String line = br.readLine();
+                boolean first = true;
+                while (null!=line) {
+                    List<String> fields = Arrays.asList(line.split(","));
+                    if (first){
+                        createColumns(fields);
+                        first = false;
+                    } else {
+                        tableView.getItems().add(fields);
+                    }
 
-                line = br.readLine();
+                    line = br.readLine();
+                }
+            }else {
+                throw new emptyException("El archivo se encuenta vacio, intente con otro");
             }
 
-        } catch (Exception ex) {
-            System.out.println("Ha ocurrido un error fatal");
+
+        } catch (NullPointerException | IOException ex) {
+            System.out.println(ex.getMessage());
+            JOptionPane.showMessageDialog(null,ex.getMessage());
         }
     }
 }
